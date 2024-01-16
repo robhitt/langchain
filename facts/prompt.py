@@ -2,7 +2,11 @@ from langchain.vectorstores.chroma import Chroma
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.chains import RetrievalQA
 from langchain.chat_models import ChatOpenAI
+from redundant_filter_retriever import RedundantFilterRetriever
 from dotenv import load_dotenv
+import langchain
+
+langchain.debug = True
 
 load_dotenv()
 
@@ -18,7 +22,8 @@ db = Chroma(persist_directory="emb", embedding_function=embeddings)
 # which Vector database we use
 # A retriever (using method "get_relevant_documents") is an object
 # that can take in a string and return some relevant list of documents
-retriever = db.as_retriever()
+# retriever = db.as_retriever()
+retriever = RedundantFilterRetriever(embeddings=embeddings, chroma=db)
 
 # RetrievalQA is a class that wraps up the Chat Prompt Template
 # retriever represents the vector store we created above
